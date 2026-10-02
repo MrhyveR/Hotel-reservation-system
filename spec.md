@@ -14,6 +14,7 @@
 2. **RoomType (Тип номеру)**
    - `id` (uuid) - primary key
    - `name` (string)
+   - `base_price` (number)
 
 3. **Room (Номер)**
    - `id` (int) - primary key
