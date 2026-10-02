@@ -21,10 +21,6 @@ erDiagram
         string name
         string description
     }
-    RoomFacility {
-        uuid room_id FK
-        uuid facility_id FK
-    }
     Booking {
         uuid id PK
         uuid guest_id FK
@@ -35,7 +31,6 @@ erDiagram
     }
 
     RoomType ||--o{ Room : "has"
-    Room ||--o{ RoomFacility : "has"
-    Facility ||--o{ RoomFacility : "included_in"
+    Room }|--|{ Facility : "includes"
     Guest ||--o{ Booking : "makes"
     Room ||--o{ Booking : "is_reserved_in"
