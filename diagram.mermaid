@@ -1,0 +1,40 @@
+erDiagram
+    Guest {
+        uuid id PK
+        string email
+        string phone
+        string full_name
+    }
+    RoomType {
+        uuid id PK
+        string name
+    }
+    Room {
+        int id PK
+        string room_number
+        number floor
+        uuid type_id FK
+    }
+    Facility {
+        uuid id PK
+        string name
+        string description
+    }
+    RoomFacility {
+        int room_id FK
+        uuid facility_id FK
+    }
+    Booking {
+        uuid id PK
+        uuid guest_id FK
+        int room_id FK
+        date check_in
+        date check_out
+        string status
+    }
+
+    RoomType ||--o{ Room : "has"
+    Room ||--o{ RoomFacility : "has"
+    Facility ||--o{ RoomFacility : "included_in"
+    Guest ||--o{ Booking : "makes"
+    Room ||--o{ Booking : "is_reserved_in"
