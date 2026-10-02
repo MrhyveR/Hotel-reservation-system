@@ -11,7 +11,7 @@ erDiagram
         number base_price
     }
     Room {
-        int id PK
+        uuid id PK
         string room_number
         number floor
         uuid type_id FK
@@ -22,13 +22,13 @@ erDiagram
         string description
     }
     RoomFacility {
-        int room_id FK
+        uuid room_id FK
         uuid facility_id FK
     }
     Booking {
         uuid id PK
         uuid guest_id FK
-        int room_id FK
+        uuid room_id FK
         date check_in
         date check_out
         string status
