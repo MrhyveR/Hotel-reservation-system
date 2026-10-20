@@ -1,0 +1,54 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Guest as "Guest"
+actor Receptionist as "Receptionist"
+actor Administrator as "Administrator"
+actor Staff as "Staff" #pink
+actor "Email Service" as EmailService #lightblue
+
+Administrator --|> Staff : <<generalization>>
+
+rectangle "Hotel-reservation-system" {
+  usecase "UC-01: Знайти вільні номери" as UC1
+  usecase "UC-02: Перевірити період" as UC2
+  usecase "UC-03: Створити бронювання" as UC3
+  usecase "UC-04: Розрахувати вартість" as UC4
+  usecase "UC-05: Надіслати сповіщення гостю" as UC5
+  usecase "UC-06: Скасувати бронювання" as UC6
+  usecase "UC-07: Оформити заселення" as UC7
+  usecase "UC-08: Оформити виселення" as UC8
+  usecase "UC-09: Переглянути бронювання" as UC9
+  usecase "UC-10: Керувати типами номерів" as UC10
+  usecase "UC-11: Керувати номерами" as UC11
+  usecase "UC-12: Керувати зручностями" as UC12
+}
+
+Guest --> UC1
+Guest --> UC3
+Guest --> UC6
+
+Receptionist --> UC1
+Receptionist --> UC2
+Receptionist --> UC3
+Receptionist --> UC4
+Receptionist --> UC6
+Receptionist --> UC7
+Receptionist --> UC8
+Receptionist --> UC9
+
+Administrator --> UC10
+Administrator --> UC11
+Administrator --> UC12
+
+Staff --> UC9
+
+EmailService --> UC5
+
+UC2 ..> UC1 : <<include>>
+UC3 ..> UC2 : <<include>>
+UC3 ..> UC4 : <<include>>
+UC5 ..> UC3 : <<extend>>
+UC5 ..> UC6 : <<extend>>
+@enduml
