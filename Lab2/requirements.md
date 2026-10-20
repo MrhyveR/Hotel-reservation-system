@@ -16,7 +16,7 @@
 - **REQ-07** [Unwanted] IF для `Room` існує активний `Booking` із періодом, що перетинається, THEN система SHALL відхилити бронювання і не створювати `Booking`.
 - **REQ-08** [Ubiquitous] Система SHALL виконувати перевірку перетину періодів і створення `Booking` як одну неподільну операцію.
 - **REQ-09** [Unwanted] IF `full_name`, `email` або `phone` порожні, `email` не має вигляду `<текст>@<домен з крапкою>` або `phone` не складається з необов'язкового `+` і 10–15 цифр, THEN система SHALL відхилити бронювання і вказати некоректне поле.
-- **REQ-10** [Event-driven] WHEN `Booking` створено, система SHALL показати `id` цього `Booking` і вартість проживання в одиницях `base_price`, обчислену як (`check_out` − `check_in`) у днях × `base_price` відповідного `RoomType`.
+- **REQ-10** [Event-driven] WHEN `Booking` створено, система SHALL показати вартість проживання в одиницях `base_price`, обчислену як (`check_out` − `check_in`) у днях × `RoomType.base_price`, а також унікальний id створеного `Booking`.
 
 ## Скасування
 
@@ -35,8 +35,8 @@
 
 ## Сповіщення
 
-- **REQ-20** [Event-driven] WHEN `Booking` створено, система SHALL передати Email Service `email` гостя та `id`, `room_number`, `check_in`, `check_out` цього `Booking` для листа-підтвердження.
-- **REQ-21** [Event-driven] WHEN `Booking` отримав статус `cancelled`, система SHALL передати Email Service `email` гостя та `id`, `room_number`, `check_in`, `check_out` цього `Booking` для листа про скасування.
+- **REQ-20** [Event-driven] WHEN `Booking` створено, система SHALL передати Email Service `email` гостя, id `Booking` та `room_number`, `check_in`, `check_out` цього `Booking` для листа-підтвердження.
+- **REQ-21** [Event-driven] WHEN `Booking` отримав статус `cancelled`, система SHALL передати Email Service `email` гостя, id `Booking` та `room_number`, `check_in`, `check_out` цього `Booking` для листа про скасування.
 - **REQ-22** [Unwanted] IF Email Service недоступний, THEN система SHALL залишити `Booking` без змін і повідомити особі, яка діяла, що лист не надіслано.
 
 ## Каталог
@@ -45,9 +45,10 @@
 - **REQ-24** [Event-driven] WHEN Administrator створює `Room` з `room_number`, `floor` та існуючим `RoomType`, система SHALL зберегти `Room`.
 - **REQ-25** [Unwanted] IF `room_number` уже існує, THEN система SHALL відхилити створення `Room`.
 - **REQ-26** [Event-driven] WHEN Administrator пов'язує `Facility` із `Room`, система SHALL зберегти цей зв'язок.
-- **REQ-27** [Unwanted] IF Administrator видаляє `Room`, для якого існує будь-який `Booking` (у будь-якому статусі), THEN система SHALL відхилити видалення.
+- **REQ-27** [Unwanted] IF Administrator видаляє `Room`, для якого існує будь-який `Booking` (активний, скасований чи завершений), THEN система SHALL відхилити видалення, щоб захистити зовнішній ключ `Booking.room_id` та зберегти історію.
 - **REQ-29** [Event-driven] WHEN Administrator створює `Facility` з `name` і `description`, система SHALL зберегти `Facility`.
 
 ## Перегляд
 
 - **REQ-28** [Event-driven] WHEN Staff відкриває перелік бронювань, система SHALL показати `full_name`, `room_number`, `check_in`, `check_out` і `status` кожного `Booking`.
+- **REQ-29** [Event-driven] WHEN Administrator створює `Facility` з `name`, система SHALL зберегти `Facility`.
