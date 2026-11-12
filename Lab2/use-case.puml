@@ -8,7 +8,8 @@ actor Administrator as "Administrator"
 actor Staff as "Staff" #pink
 actor "Email Service" as EmailService #lightblue
 
-Administrator --|> Staff : <<generalization>>
+Receptionist --|> Staff
+Administrator --|> Staff
 
 rectangle "Hotel-reservation-system" {
   usecase "UC-01: Знайти вільні номери" as UC1
@@ -25,18 +26,15 @@ rectangle "Hotel-reservation-system" {
   usecase "UC-12: Керувати зручностями" as UC12
 }
 
-Guest --> UC1
-Guest --> UC3
-Guest --> UC6
+UC1 <-- Guest
+UC3 <-- Guest
+UC6 <-- Guest
 
 Receptionist --> UC1
-Receptionist --> UC2
 Receptionist --> UC3
-Receptionist --> UC4
 Receptionist --> UC6
 Receptionist --> UC7
 Receptionist --> UC8
-Receptionist --> UC9
 
 Administrator --> UC10
 Administrator --> UC11
@@ -46,7 +44,7 @@ Staff --> UC9
 
 EmailService --> UC5
 
-UC2 ..> UC1 : <<include>>
+UC1 ..> UC2 : <<include>>
 UC3 ..> UC2 : <<include>>
 UC3 ..> UC4 : <<include>>
 UC5 ..> UC3 : <<extend>>

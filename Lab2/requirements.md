@@ -51,4 +51,3 @@
 ## Перегляд
 
 - **REQ-28** [Event-driven] WHEN Staff відкриває перелік бронювань, система SHALL показати `full_name`, `room_number`, `check_in`, `check_out` і `status` кожного `Booking`.
-- **REQ-29** [Event-driven] WHEN Administrator створює `Facility` з `name`, система SHALL зберегти `Facility`.
