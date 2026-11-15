@@ -1,0 +1,43 @@
+@startuml sc-17
+title SC-17. Заселення скасованого бронювання відхиляється
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam roundCorner 12
+skinparam maxMessageSize 260
+skinparam ArrowColor #1F2937
+skinparam SequenceLifeLineBorderColor #1F2937
+skinparam SequenceGroupBorderColor #64748B
+skinparam SequenceGroupBackgroundColor #F8FAFC
+skinparam SequenceGroupHeaderFontColor #0F172A
+skinparam NoteBorderColor #94A3B8
+skinparam NoteFontSize 12
+skinparam ParticipantBorderColor #475569
+skinparam ActorBorderColor #A21CAF
+autonumber "<b>0"
+
+actor Receptionist #FAE8FF
+participant BookingService #E6FFFA
+participant Booking #FFF1E6
+
+note over Receptionist, Booking #FEF9C3
+  **Дано:** Booking зі статусом "cancelled", період 2026-11-01…2026-11-03
+  Поточна дата: 2026-11-01
+end note
+
+Receptionist -> BookingService : registerCheckIn(bookingId)
+activate BookingService #99F6E4
+BookingService -> Booking : getStatus()
+activate Booking #FDBA74
+Booking --> BookingService : status = "cancelled"
+deactivate Booking
+alt status = "confirmed"
+  note over BookingService, Booking #E5E7EB : не виконується в SC-17, див. SC-16 і SC-18
+else status ≠ "confirmed"  (перевірка REQ-17: не проходить)
+  BookingService --> Receptionist : rejected(reason = status)
+end
+deactivate BookingService
+
+note over Receptionist, Booking #FEE2E2
+  **Результат:** Receptionist отримав rejected(reason = status); Booking.status = "cancelled", без змін
+end note
+@enduml
