@@ -1,0 +1,53 @@
+@startuml sc-16
+title SC-16. Заселення підтвердженого бронювання в день заїзду
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam roundCorner 12
+skinparam maxMessageSize 260
+skinparam ArrowColor #1F2937
+skinparam SequenceLifeLineBorderColor #1F2937
+skinparam SequenceGroupBorderColor #64748B
+skinparam SequenceGroupBackgroundColor #F8FAFC
+skinparam SequenceGroupHeaderFontColor #0F172A
+skinparam NoteBorderColor #94A3B8
+skinparam NoteFontSize 12
+skinparam ParticipantBorderColor #475569
+skinparam ActorBorderColor #A21CAF
+autonumber "<b>0"
+
+actor Receptionist #FAE8FF
+participant BookingService #E6FFFA
+participant Booking #FFF1E6
+
+note over Receptionist, Booking #FEF9C3
+  **Дано:** Booking зі статусом "confirmed", період 2026-11-01…2026-11-03
+  Поточна дата: 2026-11-01
+end note
+
+Receptionist -> BookingService : registerCheckIn(bookingId)
+activate BookingService #99F6E4
+BookingService -> Booking : getStatus()
+activate Booking #FDBA74
+Booking --> BookingService : status = "confirmed"
+deactivate Booking
+BookingService -> Booking : getPeriod()
+activate Booking #FDBA74
+Booking --> BookingService : check_in = 2026-11-01, check_out = 2026-11-03
+deactivate Booking
+BookingService -> BookingService : currentDate()
+BookingService --> BookingService : 2026-11-01
+alt status = "confirmed" і currentDate ∈ [check_in, check_out)
+  BookingService -> Booking : changeStatus("checked_in")
+  activate Booking #FDBA74
+  Booking --> BookingService : status = "checked_in"
+  deactivate Booking
+  BookingService --> Receptionist : checkedIn
+else умова не виконується
+  BookingService --> Receptionist : rejected
+end
+deactivate BookingService
+
+note over Receptionist, Booking #D1FAE5
+  **Результат:** Booking.status = "checked_in"; Receptionist отримав checkedIn
+end note
+@enduml
