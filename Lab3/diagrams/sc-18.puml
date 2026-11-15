@@ -1,0 +1,53 @@
+@startuml sc-18
+title SC-18. Заселення раніше дати заїзду відхиляється
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam roundCorner 12
+skinparam maxMessageSize 260
+skinparam ArrowColor #1F2937
+skinparam SequenceLifeLineBorderColor #1F2937
+skinparam SequenceGroupBorderColor #64748B
+skinparam SequenceGroupBackgroundColor #F8FAFC
+skinparam SequenceGroupHeaderFontColor #0F172A
+skinparam NoteBorderColor #94A3B8
+skinparam NoteFontSize 12
+skinparam ParticipantBorderColor #475569
+skinparam ActorBorderColor #A21CAF
+autonumber "<b>0"
+
+actor Receptionist #FAE8FF
+participant BookingService #E6FFFA
+participant Booking #FFF1E6
+
+note over Receptionist, Booking #FEF9C3
+  **Дано:** Booking зі статусом "confirmed", період 2026-11-05…2026-11-07
+  Поточна дата: 2026-11-01
+end note
+
+Receptionist -> BookingService : registerCheckIn(bookingId)
+activate BookingService #99F6E4
+BookingService -> Booking : getStatus()
+activate Booking #FDBA74
+Booking --> BookingService : status = "confirmed"
+deactivate Booking
+alt status = "confirmed"  (перевірка REQ-17: проходить)
+  BookingService -> Booking : getPeriod()
+  activate Booking #FDBA74
+  Booking --> BookingService : check_in = 2026-11-05, check_out = 2026-11-07
+  deactivate Booking
+  BookingService -> BookingService : currentDate()
+  BookingService --> BookingService : 2026-11-01
+  alt currentDate ∈ [check_in, check_out)
+    note over BookingService, Booking #E5E7EB : не виконується в SC-18, див. SC-16
+  else currentDate ∉ [check_in, check_out)  (перевірка REQ-18: не проходить)
+    BookingService --> Receptionist : rejected
+  end
+else status ≠ "confirmed"
+  note over BookingService, Booking #E5E7EB : не виконується в SC-18, див. SC-17
+end
+deactivate BookingService
+
+note over Receptionist, Booking #FEE2E2
+  **Результат:** Receptionist отримав rejected; Booking.status = "confirmed", без змін
+end note
+@enduml
