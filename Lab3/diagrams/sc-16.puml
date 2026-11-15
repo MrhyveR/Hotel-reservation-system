@@ -30,20 +30,24 @@ BookingService -> Booking : getStatus()
 activate Booking #FDBA74
 Booking --> BookingService : status = "confirmed"
 deactivate Booking
-BookingService -> Booking : getPeriod()
-activate Booking #FDBA74
-Booking --> BookingService : check_in = 2026-11-01, check_out = 2026-11-03
-deactivate Booking
-BookingService -> BookingService : currentDate()
-BookingService --> BookingService : 2026-11-01
-alt status = "confirmed" і currentDate ∈ [check_in, check_out)
-  BookingService -> Booking : changeStatus("checked_in")
+alt status = "confirmed"  (перевірка REQ-17: проходить)
+  BookingService -> Booking : getPeriod()
   activate Booking #FDBA74
-  Booking --> BookingService : status = "checked_in"
+  Booking --> BookingService : check_in = 2026-11-01, check_out = 2026-11-03
   deactivate Booking
-  BookingService --> Receptionist : checkedIn
-else умова не виконується
-  BookingService --> Receptionist : rejected
+  BookingService -> BookingService : currentDate()
+  BookingService --> BookingService : 2026-11-01
+  alt currentDate ∈ [check_in, check_out)  (перевірка REQ-18: проходить)
+    BookingService -> Booking : changeStatus("checked_in")
+    activate Booking #FDBA74
+    Booking --> BookingService : status = "checked_in"
+    deactivate Booking
+    BookingService --> Receptionist : checkedIn
+  else currentDate ∉ [check_in, check_out)
+    note over BookingService, Booking #E5E7EB : не виконується в SC-16, див. SC-18
+  end
+else status ≠ "confirmed"
+  note over BookingService, Booking #E5E7EB : не виконується в SC-16, див. SC-17
 end
 deactivate BookingService
 
